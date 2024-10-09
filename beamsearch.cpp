@@ -1,35 +1,35 @@
 #include "beamsearch.h"
 double boxx, boxy;
-// ¶¨ÒåÓÃÓÚ¶à±ßĞÎÅÅĞòµÄ±È½Ïº¯Êı
+// å®šä¹‰ç”¨äºå¤šè¾¹å½¢æ’åºçš„æ¯”è¾ƒå‡½æ•°
 bool beamssort(const Vector2d1& poly1, const Vector2d1& poly2)
 {
-    // ¶¨Òå±äÁ¿´æ´¢¶à±ßĞÎµÄÌØÕ÷Öµ
+    // å®šä¹‰å˜é‡å­˜å‚¨å¤šè¾¹å½¢çš„ç‰¹å¾å€¼
     double xmax_score1, xmin_score1, xlength_score1, ylength_score1, area_score1;
     double xmax_score2, xmin_score2, xlength_score2, ylength_score2, area_score2;
     Vector2d max1, min1, max2, min2;
-    // ¼ÆËãµÚÒ»¸ö¶à±ßĞÎµÄ±ß½ç¿òÌØÕ÷Öµ
+    // è®¡ç®—ç¬¬ä¸€ä¸ªå¤šè¾¹å½¢çš„è¾¹ç•Œæ¡†ç‰¹å¾å€¼
     PL().HGP_2d_Polygon_Boundingbox_C(poly1, min1, max1);
     xmax_score1 = max1.x / boxx;
     xmin_score1 = min1.x / boxx;
     xlength_score1 = (max1.x - min1.x) / boxx;
     ylength_score1 = (max1.y - min1.y) / boxy;
-    // ¼ÆËãµÚ¶ş¸ö¶à±ßĞÎµÄ±ß½ç¿òÌØÕ÷Öµ
+    // è®¡ç®—ç¬¬äºŒä¸ªå¤šè¾¹å½¢çš„è¾¹ç•Œæ¡†ç‰¹å¾å€¼
     PL().HGP_2d_Polygon_Boundingbox_C(poly2, min2, max2);
     xmax_score2 = max2.x / boxx;
     xmin_score2 = min2.x / boxx;
     xlength_score2 = (max2.x - min2.x) / boxx;
     ylength_score2 = (max2.y - min2.y) / boxy;
-    // ¼ÆËã¶à±ßĞÎµÄÃæ»ıÌØÕ÷Öµ
+    // è®¡ç®—å¤šè¾¹å½¢çš„é¢ç§¯ç‰¹å¾å€¼
     area_score1 = PL().HGP_2D_Polygon_Area_C(poly1) / (boxx * (max1.y - min1.y));
     area_score2 = PL().HGP_2D_Polygon_Area_C(poly2) / (boxx * (max2.y - min2.y));
-    // ¼ÆËã¶à±ßĞÎµÄ×ÜµÃ·Ö
+    // è®¡ç®—å¤šè¾¹å½¢çš„æ€»å¾—åˆ†
     double score1 = xmax_score1 + xmin_score1 + xlength_score1 + ylength_score1 + area_score1;
     double score2 = xmax_score2 + xmin_score2 + xlength_score2 + ylength_score2 + area_score2;
-    // ±È½ÏÁ½¸ö¶à±ßĞÎµÄ×ÜµÃ·Ö
+    // æ¯”è¾ƒä¸¤ä¸ªå¤šè¾¹å½¢çš„æ€»å¾—åˆ†
     return score1 > score2;
 }
 
-double pointToPolygonDist(const Point_2& p, const Polygon_2& polygon) {//µãµ½¶à±ßĞÎµÄ¾àÀë;¼ìÑéÍê³É£¬Ã»±¨´í
+double pointToPolygonDist(const Point_2& p, const Polygon_2& polygon) {//ç‚¹åˆ°å¤šè¾¹å½¢çš„è·ç¦»;æ£€éªŒå®Œæˆï¼Œæ²¡æŠ¥é”™
     int count = 0;
     double minDist = INFINITY;
 
@@ -37,13 +37,13 @@ double pointToPolygonDist(const Point_2& p, const Polygon_2& polygon) {//µãµ½¶à±
         const Point_2& a = e->source();
         const Point_2& b = e->target();
 
-        // ÅĞ¶Ïµã p ÓëÏß¶Î ab ÊÇ·ñÔÚÍ¬Ò»Ë®Æ½ÏßÉÏ£¬²¢ÇÒ p ÔÚ ab µÄ×ó²à
+        // åˆ¤æ–­ç‚¹ p ä¸çº¿æ®µ ab æ˜¯å¦åœ¨åŒä¸€æ°´å¹³çº¿ä¸Šï¼Œå¹¶ä¸” p åœ¨ ab çš„å·¦ä¾§
         if ((a.y() > p.y() != b.y() > p.y()) &&
             (p.x() < (b.x() - a.x()) * (p.y() - a.y()) / (b.y() - a.y()) + a.x())) {
             count++;
         }
 
-        // ¼ÆËãµã p µ½Ïß¶Î ab µÄ×î¶Ì¾àÀë£¬²¢¸üĞÂ×îĞ¡¾àÀë
+        // è®¡ç®—ç‚¹ p åˆ°çº¿æ®µ ab çš„æœ€çŸ­è·ç¦»ï¼Œå¹¶æ›´æ–°æœ€å°è·ç¦»
         Segment_2 s(a, b);
         minDist = std::min(minDist, squared_distance(p, s));
     }
@@ -56,7 +56,7 @@ double pointToPolygonDist(const Point_2& p, const Polygon_2& polygon) {//µãµ½¶à±
 }
 
 void CGAL_2D_Polygon_Dart_Sampling_a(const vector<Polygon_2>& py, const double& d, vector<Point_2>& sampling_points)
-{//ÀëÉ¢È¡µã·½Ê½£º¾ùÔÈÈ¡µã
+{//ç¦»æ•£å–ç‚¹æ–¹å¼ï¼šå‡åŒ€å–ç‚¹
     Functs::MAssert(d > 0 && d < 1.0, "CGAL_2D_Polygon_Dart_Sampling if (!(d > 0 && d < 1.0))");
 
     double xmin = 0;
@@ -91,7 +91,7 @@ void CGAL_2D_Polygon_Dart_Sampling_a(const vector<Polygon_2>& py, const double& 
 }
 
 void findPolygons(vector<Segment_2> edges, vector<vector<Segment_2>>& polys) {
-    //½«ÎŞĞòµÄ±ßÁ¬³ÉÍ¼ĞÎ£¬¿É·µ»Ø¶à¸öÍ¼ĞÎ
+    //å°†æ— åºçš„è¾¹è¿æˆå›¾å½¢ï¼Œå¯è¿”å›å¤šä¸ªå›¾å½¢
     while (!edges.empty()) {
         vector<Segment_2> poly;
         Segment_2 currentEdge = edges[0];
@@ -129,7 +129,7 @@ void findPolygons(vector<Segment_2> edges, vector<vector<Segment_2>>& polys) {
     }
 }
 
-Polygon_2 Convert_Vector2d1_to_Polygon_2(Vector2d1 v2d)//ÀàĞÍ×ª»»Vector2d1×ª»¯ÎªPolygon
+Polygon_2 Convert_Vector2d1_to_Polygon_2(Vector2d1 v2d)//ç±»å‹è½¬æ¢Vector2d1è½¬åŒ–ä¸ºPolygon
 {
     vector<Point_2> pts;
     for (auto itt = v2d.begin(); itt != v2d.end(); itt++)
@@ -141,7 +141,7 @@ Polygon_2 Convert_Vector2d1_to_Polygon_2(Vector2d1 v2d)//ÀàĞÍ×ª»»Vector2d1×ª»¯Îª
     return target;
 }
 
-Vector2d1 Convert_Polygon_2_to_Vector2d1(Polygon_2 p2)//ÀàĞÍ×ª»»Polygon×ª»¯ÎªVector2d1
+Vector2d1 Convert_Polygon_2_to_Vector2d1(Polygon_2 p2)//ç±»å‹è½¬æ¢Polygonè½¬åŒ–ä¸ºVector2d1
 {
     Vector2d1 target;
     for (auto itt = p2.begin(); itt != p2.end(); itt++)
@@ -153,7 +153,7 @@ Vector2d1 Convert_Polygon_2_to_Vector2d1(Polygon_2 p2)//ÀàĞÍ×ª»»Polygon×ª»¯ÎªVec
 }
 struct SegmentComparator {
     bool operator()(const Segment_2& a, const Segment_2& b) const {
-        // ÊµÏÖ±È½ÏÂß¼­£¬·µ»Ø true Èç¹û seg1 Ó¦¸ÃÅÅÔÚ seg2 Ö®Ç°
+        // å®ç°æ¯”è¾ƒé€»è¾‘ï¼Œè¿”å› true å¦‚æœ seg1 åº”è¯¥æ’åœ¨ seg2 ä¹‹å‰
         if (a.source().x() != b.source().x()) {
             return a.source().x() < b.source().x();
         }
@@ -178,14 +178,14 @@ bool comPoints(const Point_2& p1, const Point_2& p2) {
 }
 
 vector<Polygon_2> get_triangulation_net(vector<Point_2> point_set, vector<Polygon_2> py)
-{//Ê¹ÓÃDelaunayÉú³ÉÍø¸ñÍ¼£¬È¥³ı¹ı³¤µÄ±ß£¬ÕÒµ½Á¬ĞøµÄ±ßÔµµã£¬¼´¿É·µ»ØÍ¼ĞÎ
+{//ä½¿ç”¨Delaunayç”Ÿæˆç½‘æ ¼å›¾ï¼Œå»é™¤è¿‡é•¿çš„è¾¹ï¼Œæ‰¾åˆ°è¿ç»­çš„è¾¹ç¼˜ç‚¹ï¼Œå³å¯è¿”å›å›¾å½¢
     Delaunay triangulation;
-    triangulation.insert(point_set.begin(), point_set.end());//Éú³ÉÍø¸ñÍ¼
+    triangulation.insert(point_set.begin(), point_set.end());//ç”Ÿæˆç½‘æ ¼å›¾
     double maxlength = 400;
     vector<Segment_2> one_face_edges;
     map<Segment_2, int, SegmentComparator> edge_map;
     for (Delaunay::Finite_faces_iterator fit = triangulation.finite_faces_begin(); fit != triangulation.finite_faces_end(); ++fit) {
-        // ±éÀúÈı½ÇĞÎµÄÈıÌõ±ß.
+        // éå†ä¸‰è§’å½¢çš„ä¸‰æ¡è¾¹.
         bool tab = false;
         Delaunay::Vertex_handle v1 = fit->vertex(0);
         Delaunay::Vertex_handle v2 = fit->vertex(1);
@@ -253,13 +253,12 @@ vector<Polygon_2> get_triangulation_net(vector<Point_2> point_set, vector<Polygo
         }
         Polygon_2 wewant(pots.begin(), pots.end());
         true_ans.push_back(wewant);
-        // ÏÔÊ¾Í¼Ïñ
+        // æ˜¾ç¤ºå›¾åƒ
         //cv::imshow("Image with Point", image);
         //cv::waitKey(0);
     }
     return true_ans;
 }
-
 pair<double, int> Beamsearch::calculateScore(const std::vector<Vector2d1>& polygons, int previous)
 {
     double areas = 0;
@@ -272,21 +271,55 @@ pair<double, int> Beamsearch::calculateScore(const std::vector<Vector2d1>& polyg
     {
         pys.push_back(Convert_Vector2d1_to_Polygon_2(*it));
     }
-    vector<Point_2> getit;
-    CGAL_2D_Polygon_Dart_Sampling_a(pys, 0.002, getit);//ÀëÉ¢È¡µã£¬ÅĞ¶ÏÊÇ·ñÔÚÍ¼ĞÎÍâ²à£¬·µ»Øµã¼¯
-    //CGAL_2D_Polygon_Dart_Sampling_b(pys, 0.5, getit, 100);//ÀëÉ¢È¡µã£¬ÅĞ¶ÏÊÇ·ñÔÚÍ¼ĞÎÍâ²à£¬·µ»Øµã¼¯
-    ans = get_triangulation_net(getit, pys);//¸ù¾İµã¼¯Éú³É¾§°û
+    // ç›´æ¥ç”Ÿæˆåç§»åçš„å¤šè¾¹å½¢
+	for (const auto& poly : pys) {
+    Polygon_2 offset_poly = poly.outline().offset(offset_value); // è®¾å®šçš„åç§»å€¼
+    if (!offset_poly.is_empty()) {
+        ans.push_back(offset_poly);
+    }
+	}
+	// å¤„ç†ç”Ÿæˆçš„å¤šè¾¹å½¢
+    for (const auto& it : ans) {
+        output.push_back(Convert_Polygon_2_to_Vector2d1(it));
+        if (abs(it.area()) < 500) {
+            continue; // è·³è¿‡è¾ƒå°çš„æ™¶èƒ
+        }
+
+        // è®¡ç®—åŒ…å›´ç›’é¢ç§¯å’Œå‘¨é•¿
+        areas += it.bbox().x_span() * it.bbox().y_span();
+        double length = 0;
+        
+        // è®¡ç®—è¾¹é•¿æ€»å’Œ
+        for (auto itt = it.edges_begin(); itt != it.edges_end(); itt++) {
+            length += sqrt(itt->squared_length());
+        }
+
+        // è®¡ç®—å¾—åˆ†
+        score += it.bbox().x_span() * it.bbox().y_span() * (it.bbox().x_span() + it.bbox().y_span()) * 2 / length;
+        now++;
+    }
+
+    if (areas == 0) return make_pair(0, now);
+    score /= areas;
+    score = score * 0.9 + 0.1 * min(previous / now, 1); // è°ƒæ•´å¾—åˆ†å…¬å¼
+
+    return make_pair(score, now); // è¿”å›å¾—åˆ†ä¸æ™¶èƒæ•°é‡
+}
+ /*   vector<Point_2> getit;
+    CGAL_2D_Polygon_Dart_Sampling_a(pys, 0.002, getit);//ç¦»æ•£å–ç‚¹ï¼Œåˆ¤æ–­æ˜¯å¦åœ¨å›¾å½¢å¤–ä¾§ï¼Œè¿”å›ç‚¹é›†
+    //CGAL_2D_Polygon_Dart_Sampling_b(pys, 0.5, getit, 100);//ç¦»æ•£å–ç‚¹ï¼Œåˆ¤æ–­æ˜¯å¦åœ¨å›¾å½¢å¤–ä¾§ï¼Œè¿”å›ç‚¹é›†
+    ans = get_triangulation_net(getit, pys);//æ ¹æ®ç‚¹é›†ç”Ÿæˆæ™¶èƒ
     for (auto it = ans.begin(); it != ans.end(); it++) {
         output.push_back(Convert_Polygon_2_to_Vector2d1(*it));
     }
     geometry_layer_output2(output, polygons);
     for (auto it = ans.begin(); it != ans.end(); it++)
     {
-        if (abs(it->area()) < 500) {//½ÏĞ¡µÄ¾§°û²»Óè¿¼ÂÇ
+        if (abs(it->area()) < 500) {//è¾ƒå°çš„æ™¶èƒä¸äºˆè€ƒè™‘
             continue;
         }
-        else {//´¦Àí¾§°û
-            //ÕâÀï¿¼ÂÇµÄÊÇ¾§°ûµÄÊıÁ¿£¬°üÎ§ºĞÃæ»ıÓëÖÜ³¤£¬ÖÜ³¤
+        else {//å¤„ç†æ™¶èƒ
+            //è¿™é‡Œè€ƒè™‘çš„æ˜¯æ™¶èƒçš„æ•°é‡ï¼ŒåŒ…å›´ç›’é¢ç§¯ä¸å‘¨é•¿ï¼Œå‘¨é•¿
             areas += it->bbox().x_span() * it->bbox().y_span();
             double length = 0;
             now++;
@@ -299,63 +332,64 @@ pair<double, int> Beamsearch::calculateScore(const std::vector<Vector2d1>& polyg
     }
     if (areas == 0)return make_pair(0, now);
     score /= areas;
-    score = score * 0.9 + 0.1 * min(previous / now, 1);//¹«Ê½£¬²ÎÊı¿Éµ÷Õû
-    return make_pair(score, now);//·µ»ØµÃ·ÖÓë¾§°ûÊıÁ¿
-}
+    score = score * 0.9 + 0.1 * min(previous / now, 1);//å…¬å¼ï¼Œå‚æ•°å¯è°ƒæ•´
+    return make_pair(score, now);//è¿”å›å¾—åˆ†ä¸æ™¶èƒæ•°é‡
+}*/ 
 
-bool Beamsearch::doPolygonsCollide2(const Vector2d1& poly1, const vector<Vector2d1>& poly2) {//Åö×²¼ì²â£¬¶à±ßĞÎÇó½»
+
+bool Beamsearch::doPolygonsCollide2(const Vector2d1& poly1, const vector<Vector2d1>& poly2) {//ç¢°æ’æ£€æµ‹ï¼Œå¤šè¾¹å½¢æ±‚äº¤
     for (const Vector2d1& one_polygon : poly2) {
         if (PL().HGP_2D_Two_Polygons_Intersection_C(poly1, one_polygon) > 0) {
-            return true; // ·¢ÉúÅö×²
+            return true; // å‘ç”Ÿç¢°æ’
         }
     }
-    return false; // Î´·¢ÉúÅö×²
+    return false; // æœªå‘ç”Ÿç¢°æ’
 }
 
 Vector2d1 Beamsearch::translatePolygon(const Vector2d1& polygon, double dx, double dy) {
     std::vector<Vector2d> translatedVertices;
-    // ±éÀúËùÓĞ¶¥µã£¬¶ÔÃ¿¸ö¶¥µã½øĞĞÆ½ÒÆ²Ù×÷£¬²¢Ìí¼Óµ½ĞÂµÄ¶¥µãÁĞ±íÖĞ
+    // éå†æ‰€æœ‰é¡¶ç‚¹ï¼Œå¯¹æ¯ä¸ªé¡¶ç‚¹è¿›è¡Œå¹³ç§»æ“ä½œï¼Œå¹¶æ·»åŠ åˆ°æ–°çš„é¡¶ç‚¹åˆ—è¡¨ä¸­
     for (auto it = polygon.begin(); it != polygon.end(); ++it) {
 
         Vector2d translatedPoint((*it).x + dx, (*it).y + dy);
         translatedVertices.push_back(translatedPoint);
     }
-    // Ê¹ÓÃĞÂµÄ¶¥µãÁĞ±í¹¹ÔìÒ»¸öĞÂµÄVector2d1¶ÔÏó²¢·µ»Ø
+    // ä½¿ç”¨æ–°çš„é¡¶ç‚¹åˆ—è¡¨æ„é€ ä¸€ä¸ªæ–°çš„Vector2d1å¯¹è±¡å¹¶è¿”å›
     return Vector2d1(translatedVertices.begin(), translatedVertices.end());
 }
 
 std::vector<Vector2d1> Beamsearch::beamSearch(const std::vector<Vector2d1>& inputPolygons, int beamWidth, const Vector2d1& boundingRect) {
-    // ³õÊ¼»¯ºòÑ¡½â¾ö·½°¸µÄid
+    // åˆå§‹åŒ–å€™é€‰è§£å†³æ–¹æ¡ˆçš„id
     int id = 0;
-    // ´´½¨Ò»¸öÓÅÏÈ¶ÓÁĞ£¬ÓÃÓÚ´æ´¢ºòÑ¡½â¾ö·½°¸£¬°´ÕÕµÃ·Ö´Ó¸ßµ½µÍÅÅĞò
+    // åˆ›å»ºä¸€ä¸ªä¼˜å…ˆé˜Ÿåˆ—ï¼Œç”¨äºå­˜å‚¨å€™é€‰è§£å†³æ–¹æ¡ˆï¼ŒæŒ‰ç…§å¾—åˆ†ä»é«˜åˆ°ä½æ’åº
     std::priority_queue <Candidate, std::vector<Candidate>, less<Candidate>> candidates;
-    // ´´½¨¸ù½Úµã
-    Candidate root(id++, {}, 0.0, {}, 1);//¿ÕµÄ½Úµã£¬Ã»ÓĞ¼ÓÈë¶à±ßĞÎ£¬ÆÀ·ÖÒ²ÊÇ0
-    // ½«¸ù½Úµã¼ÓÈëºòÑ¡½â¾ö·½°¸¶ÓÁĞ
+    // åˆ›å»ºæ ¹èŠ‚ç‚¹
+    Candidate root(id++, {}, 0.0, {}, 1);//ç©ºçš„èŠ‚ç‚¹ï¼Œæ²¡æœ‰åŠ å…¥å¤šè¾¹å½¢ï¼Œè¯„åˆ†ä¹Ÿæ˜¯0
+    // å°†æ ¹èŠ‚ç‚¹åŠ å…¥å€™é€‰è§£å†³æ–¹æ¡ˆé˜Ÿåˆ—
     candidates.push(root);
-    // ²åÈëÒ»¸öĞéÄâ½Úµã£¬±êÖ¾¸ù½Úµã
-    gml_tree.insert(-1, 0);//Äã¿Ï¶¨¶ÔÕâ¸ögml_treeºÜÃÔ»ó£¬¼û´úÂëÏê½âÎÄµµ
+    // æ’å…¥ä¸€ä¸ªè™šæ‹ŸèŠ‚ç‚¹ï¼Œæ ‡å¿—æ ¹èŠ‚ç‚¹
+    gml_tree.insert(-1, 0);//ä½ è‚¯å®šå¯¹è¿™ä¸ªgml_treeå¾ˆè¿·æƒ‘ï¼Œè§ä»£ç è¯¦è§£æ–‡æ¡£
     std::vector<Vector2d1> sortedPolygons = inputPolygons;
-    // ±¸·İÔ­Ê¼¶à±ßĞÎ
+    // å¤‡ä»½åŸå§‹å¤šè¾¹å½¢
     std::vector<Vector2d1> ori_Polygons = inputPolygons;
-    std::sort(sortedPolygons.begin(), sortedPolygons.end(), beamssort);// ¶ÔÊäÈëµÄ¶à±ßĞÎ½øĞĞÅÅĞò£¬°´ÕÕÒ»¶¨µÄ¹æÔò£¬ÕâÀï°´ÕÕbeamsort£¬»ñµÃµÄÊÇ¶à±ßĞÎÅÅĞò
+    std::sort(sortedPolygons.begin(), sortedPolygons.end(), beamssort);// å¯¹è¾“å…¥çš„å¤šè¾¹å½¢è¿›è¡Œæ’åºï¼ŒæŒ‰ç…§ä¸€å®šçš„è§„åˆ™ï¼Œè¿™é‡ŒæŒ‰ç…§beamsortï¼Œè·å¾—çš„æ˜¯å¤šè¾¹å½¢æ’åº
 
-    // ´¦ÀíÃ¿¸ö´ı·ÅÖÃµÄ¶à±ßĞÎ
+    // å¤„ç†æ¯ä¸ªå¾…æ”¾ç½®çš„å¤šè¾¹å½¢
     for (int times = 0; times < sortedPolygons.size(); times++) {
-        // ÓÃÓÚ´æ´¢ÏÂÒ»ÂÖ´ÎµÄºòÑ¡½â¾ö·½°¸µÄÓÅÏÈ¶ÓÁĞ
+        // ç”¨äºå­˜å‚¨ä¸‹ä¸€è½®æ¬¡çš„å€™é€‰è§£å†³æ–¹æ¡ˆçš„ä¼˜å…ˆé˜Ÿåˆ—
         std::priority_queue < Candidate, std::vector<Candidate>, less<Candidate>> nextCandidates;
 
-        // ´¦Àíµ±Ç°ÂÖ´ÎµÄÃ¿¸öºòÑ¡½â¾ö·½°¸
+        // å¤„ç†å½“å‰è½®æ¬¡çš„æ¯ä¸ªå€™é€‰è§£å†³æ–¹æ¡ˆ
         while (!candidates.empty()) {
-            // »ñÈ¡µ±Ç°×îÓÅµÄºòÑ¡½â¾ö·½°¸
+            // è·å–å½“å‰æœ€ä¼˜çš„å€™é€‰è§£å†³æ–¹æ¡ˆ
             Candidate candidate = candidates.top();
             candidates.pop();
-            // ¿ØÖÆ·ÅÖÃ´ÎÊıµÄ±äÁ¿
+            // æ§åˆ¶æ”¾ç½®æ¬¡æ•°çš„å˜é‡
             int tab = 0;
 
-            // ³¢ÊÔÔÚµ±Ç°Î»ÖÃ·ÅÖÃ²»Í¬µÄ¶à±ßĞÎ
+            // å°è¯•åœ¨å½“å‰ä½ç½®æ”¾ç½®ä¸åŒçš„å¤šè¾¹å½¢
             for (int i = 0; i < sortedPolygons.size(); i++) {
-                // ¼ì²é¸Ã¶à±ßĞÎÊÇ·ñÒÑ¾­·ÅÖÃÔÚ½â¾ö·½°¸ÖĞ
+                // æ£€æŸ¥è¯¥å¤šè¾¹å½¢æ˜¯å¦å·²ç»æ”¾ç½®åœ¨è§£å†³æ–¹æ¡ˆä¸­
                 bool type_tab = 0;
                 for (auto types : candidate.typenum) {
                     if (types == i) {
@@ -363,27 +397,27 @@ std::vector<Vector2d1> Beamsearch::beamSearch(const std::vector<Vector2d1>& inpu
                         break;
                     }
                 }
-                // Èç¹û¶à±ßĞÎÒÑ¾­·ÅÖÃÔÚ½â¾ö·½°¸ÖĞ£¬ÔòÌø¹ı
+                // å¦‚æœå¤šè¾¹å½¢å·²ç»æ”¾ç½®åœ¨è§£å†³æ–¹æ¡ˆä¸­ï¼Œåˆ™è·³è¿‡
                 if (type_tab != 0) {
                     continue;
                 }
-                // ¿ØÖÆ·ÅÖÃ´ÎÊı£¬×î¶à³¢ÊÔ3´Î
+                // æ§åˆ¶æ”¾ç½®æ¬¡æ•°ï¼Œæœ€å¤šå°è¯•3æ¬¡
                 if (tab < 3) tab++;
                 else break;
 
-                // ½«¶à±ßĞÎ·ÅÖÃÔÚÈİÆ÷µÄ×î¶¥²¿
+                // å°†å¤šè¾¹å½¢æ”¾ç½®åœ¨å®¹å™¨çš„æœ€é¡¶éƒ¨
                 Vector2d bomin, bomax, somin, somax;
                 PL().HGP_2d_Polygon_Boundingbox_C(boundingRect, bomin, bomax);
                 PL().HGP_2d_Polygon_Boundingbox_C(sortedPolygons[i], somin, somax);
                 double dx = 0.0;
                 double dy = bomax.y - somax.y;
                 Vector2d1 finalPolygon = translatePolygon(sortedPolygons[i], dx, dy);
-                // Èç¹û·ÅÖÃºó·¢ÉúÅö×²»ò³¬³ö±ß½ç£¬ÔòÌø¹ı
+                // å¦‚æœæ”¾ç½®åå‘ç”Ÿç¢°æ’æˆ–è¶…å‡ºè¾¹ç•Œï¼Œåˆ™è·³è¿‡
                 if (doPolygonsCollide2(finalPolygon, candidate.polygons) || somax.y > boxy) {
                     tab--;
                     continue;
                 }
-                // Ê¹ÓÃ¶ş·Ö·¨½øĞĞÆ½ÒÆ£¬Ö±µ½·¢ÉúÅö×²
+                // ä½¿ç”¨äºŒåˆ†æ³•è¿›è¡Œå¹³ç§»ï¼Œç›´åˆ°å‘ç”Ÿç¢°æ’
                 PL().HGP_2d_Polygon_Boundingbox_C(finalPolygon, bomin, bomax);
                 double bottom_distance = bomin.y;
                 bool judge = 1;
@@ -405,64 +439,64 @@ std::vector<Vector2d1> Beamsearch::beamSearch(const std::vector<Vector2d1>& inpu
                         finalPolygon = translatedPolygon;
                     }
                 }
-                // Éú³ÉĞÂµÄºòÑ¡½â¾ö·½°¸
+                // ç”Ÿæˆæ–°çš„å€™é€‰è§£å†³æ–¹æ¡ˆ
                 std::vector<Vector2d1> newPolygons = candidate.polygons;
                 std::vector<int> temp = candidate.typenum;
-                temp.push_back(i);//Ñ¹ÈëĞÂ¶à±ßĞÎĞòºÅ
+                temp.push_back(i);//å‹å…¥æ–°å¤šè¾¹å½¢åºå·
                 newPolygons.push_back(finalPolygon);
 
-                // ¼ÆËãĞÂµÄ½â¾ö·½°¸µÄµÃ·Ö
+                // è®¡ç®—æ–°çš„è§£å†³æ–¹æ¡ˆçš„å¾—åˆ†
                 pair<double, int> sc_pv = calculateScore(newPolygons, candidate.previous);
                 double newScore = sc_pv.first;
 
-                // Êä³öÆÀ·Ö
-                cout << "·½°¸id" << id << ":" << newScore << endl;
-                // ±£´æÍ¼Ïñ²¢¼ÇÂ¼µÃ·Ö
+                // è¾“å‡ºè¯„åˆ†
+                cout << "æ–¹æ¡ˆid" << id << ":" << newScore << endl;
+                // ä¿å­˜å›¾åƒå¹¶è®°å½•å¾—åˆ†
                 geometry_layer_save(newPolygons, id, newScore);
                 score.push_back(newScore);
                 process_solutions.push_back(newPolygons);
-                // ½«ĞÂµÄ½â¾ö·½°¸¼ÓÈëºòÑ¡¶ÓÁĞ
-                gml_tree.insert(candidate.CandidateId, id);//gmlÊ÷µÄ²åÈë
+                // å°†æ–°çš„è§£å†³æ–¹æ¡ˆåŠ å…¥å€™é€‰é˜Ÿåˆ—
+                gml_tree.insert(candidate.CandidateId, id);//gmlæ ‘çš„æ’å…¥
                 Candidate son(id++, newPolygons, newScore, temp, sc_pv.second);
                 nextCandidates.push(son);
-                // ±£³ÖºòÑ¡¶ÓÁĞµÄ´óĞ¡²»³¬¹ıÊø¿í¶È
+                // ä¿æŒå€™é€‰é˜Ÿåˆ—çš„å¤§å°ä¸è¶…è¿‡æŸå®½åº¦
                 while (nextCandidates.size() > beamWidth) {
                     nextCandidates.pop();
                 }
             }
         }
-        // ¸üĞÂºòÑ¡½â¾ö·½°¸¶ÓÁĞ
+        // æ›´æ–°å€™é€‰è§£å†³æ–¹æ¡ˆé˜Ÿåˆ—
         candidates = nextCandidates;
     }
 
-    // »ñÈ¡×î¼ÑµÄºòÑ¡½â¾ö·½°¸
+    // è·å–æœ€ä½³çš„å€™é€‰è§£å†³æ–¹æ¡ˆ
     while (candidates.size() > 1) {
         candidates.pop();
     }
-    // Êä³ö×î¼ÑÆÀ·Ö
-    cout << "×î¼Ñscore" << candidates.top().score << endl;
+    // è¾“å‡ºæœ€ä½³è¯„åˆ†
+    cout << "æœ€ä½³score" << candidates.top().score << endl;
     vector<Vector2d1> a = origin_polygons;
-    // ±£´æ×î¼Ñ½â¾ö·½°¸µÄÍ¼Ïñ
+    // ä¿å­˜æœ€ä½³è§£å†³æ–¹æ¡ˆçš„å›¾åƒ
     if (!candidates.top().polygons.empty()) {
-        // »ñÈ¡×î¼Ñ½â¾ö·½°¸µÄ¶à±ßĞÎºÍËüÃÇÔÚÔ­Ê¼ÊäÈëÖĞµÄË÷ÒıË³Ğò
+        // è·å–æœ€ä½³è§£å†³æ–¹æ¡ˆçš„å¤šè¾¹å½¢å’Œå®ƒä»¬åœ¨åŸå§‹è¾“å…¥ä¸­çš„ç´¢å¼•é¡ºåº
         vector<Vector2d1> final_plan = candidates.top().polygons;
         vector<int> final_nums = candidates.top().typenum;
         int i = 0;
-        // ±éÀú×î¼Ñ½â¾ö·½°¸ÖĞµÄÃ¿¸ö¶à±ßĞÎ
+        // éå†æœ€ä½³è§£å†³æ–¹æ¡ˆä¸­çš„æ¯ä¸ªå¤šè¾¹å½¢
         for (auto it = final_plan.begin(); it != final_plan.end(); it++) {
-            // »ñÈ¡µ±Ç°¶à±ßĞÎÔÚÔ­Ê¼ÊäÈëÖĞµÄË÷Òı
+            // è·å–å½“å‰å¤šè¾¹å½¢åœ¨åŸå§‹è¾“å…¥ä¸­çš„ç´¢å¼•
             int sort_index = final_nums[i];
             i++;
-            // ¼ÆËãµ±Ç°¶à±ßĞÎÔÚ x ºÍ y ÖáÉÏµÄÎ»ÒÆÁ¿
+            // è®¡ç®—å½“å‰å¤šè¾¹å½¢åœ¨ x å’Œ y è½´ä¸Šçš„ä½ç§»é‡
             double delta_x = ((*it).begin())->x - (sortedPolygons[sort_index].begin())->x;
             double delta_y = ((*it).begin())->y - (sortedPolygons[sort_index].begin())->y;
             cout << "deltas" << delta_x << " " << delta_y << endl;
             int j = 0;
-            // ±éÀúÔ­Ê¼ÊäÈëµÄ¶à±ßĞÎ
+            // éå†åŸå§‹è¾“å…¥çš„å¤šè¾¹å½¢
             for (auto ooo : ori_Polygons) {
-                // Èç¹ûµ±Ç°¶à±ßĞÎÓëµ±Ç°±éÀúµÄÔ­Ê¼¶à±ßĞÎÊÇÍ¬Ò»¸ö¶à±ßĞÎ
+                // å¦‚æœå½“å‰å¤šè¾¹å½¢ä¸å½“å‰éå†çš„åŸå§‹å¤šè¾¹å½¢æ˜¯åŒä¸€ä¸ªå¤šè¾¹å½¢
                 if (ooo == sortedPolygons[sort_index]) {
-                    // ¶Ô¸Ã¶à±ßĞÎµÄÃ¿¸ö¶¥µã½øĞĞÎ»ÒÆ£¬Ê¹ÆäÓëµ±Ç°¶à±ßĞÎµÄÎ»ÖÃ¶ÔÆë
+                    // å¯¹è¯¥å¤šè¾¹å½¢çš„æ¯ä¸ªé¡¶ç‚¹è¿›è¡Œä½ç§»ï¼Œä½¿å…¶ä¸å½“å‰å¤šè¾¹å½¢çš„ä½ç½®å¯¹é½
                     for (auto it = a[j].begin(); it != a[j].end(); it++) {
                         (*it).x += delta_x;
                         (*it).y += delta_y;
@@ -473,52 +507,52 @@ std::vector<Vector2d1> Beamsearch::beamSearch(const std::vector<Vector2d1>& inpu
                 }
             }
         }
-        // ±£´æµ÷ÕûºóµÄ×î¼Ñ½â¾ö·½°¸ºÍÔ­Ê¼ÊäÈë¶à±ßĞÎµÄÍ¼Ïñ
+        // ä¿å­˜è°ƒæ•´åçš„æœ€ä½³è§£å†³æ–¹æ¡ˆå’ŒåŸå§‹è¾“å…¥å¤šè¾¹å½¢çš„å›¾åƒ
         geometry_layer_save1(final_plan, a);
     }
-    // ·µ»Ø×î¼Ñ½â¾ö·½°¸
+    // è¿”å›æœ€ä½³è§£å†³æ–¹æ¡ˆ
     return candidates.top().polygons;
 }
 
-void create_folder(string a) {//¹¤¾ßº¯Êı£¬´´½¨ÎÄ¼ş¼Ğ
+void create_folder(string a) {//å·¥å…·å‡½æ•°ï¼Œåˆ›å»ºæ–‡ä»¶å¤¹
     string folderPath = "./" + a;
     CreateDirectory(folderPath.c_str(), NULL);
     return;
 }
 
 void Beamsearch::work() {
-    string output_filename = image_path;//ÔÚÄ¿Ç°Çé¿öÏÂ£¬ÎÒÃÇĞèÒª½«packing±ä»¯¹ı³ÌµÄÃ¿Ò»ÕÅÍ¼±£´æÏÂÀ´£¬image_pathÊÇÒ»¸öÎÄ¼ş¼ĞµØÖ·£¬¶¨ÒåÔÚBeamsearchÀàÀï
-    create_folder(output_filename);//´´½¨±£´æÊä³öÍ¼ÏñµÄÎÄ¼ş¼Ğ
-    SYSTEMTIME st;//»ñÈ¡Ê±¼ä£¬ÒÔ¶Ô±£´æµÄpacking¹ı³ÌÍ¼Ïñ½øĞĞ¸³Ãû
+    string output_filename = image_path;//åœ¨ç›®å‰æƒ…å†µä¸‹ï¼Œæˆ‘ä»¬éœ€è¦å°†packingå˜åŒ–è¿‡ç¨‹çš„æ¯ä¸€å¼ å›¾ä¿å­˜ä¸‹æ¥ï¼Œimage_pathæ˜¯ä¸€ä¸ªæ–‡ä»¶å¤¹åœ°å€ï¼Œå®šä¹‰åœ¨Beamsearchç±»é‡Œ
+    create_folder(output_filename);//åˆ›å»ºä¿å­˜è¾“å‡ºå›¾åƒçš„æ–‡ä»¶å¤¹
+    SYSTEMTIME st;//è·å–æ—¶é—´ï¼Œä»¥å¯¹ä¿å­˜çš„packingè¿‡ç¨‹å›¾åƒè¿›è¡Œèµ‹å
     GetSystemTime(&st);
-    string time_path = image_path + "/" + to_string(st.wYear) + "_" + to_string(st.wMonth) + "_" + to_string(st.wDay) + "_" + to_string(st.wHour) + "_" + to_string(st.wMinute) + "_" + to_string(st.wSecond);//´Ë´Îpacking¹ı³ÌµÃµ½µÄÎÄ¼ş¼ĞÃû
-    create_folder(time_path);//Ò»´Îpacking£¬Ò»¸öÎÄ¼ş¼Ğ
+    string time_path = image_path + "/" + to_string(st.wYear) + "_" + to_string(st.wMonth) + "_" + to_string(st.wDay) + "_" + to_string(st.wHour) + "_" + to_string(st.wMinute) + "_" + to_string(st.wSecond);//æ­¤æ¬¡packingè¿‡ç¨‹å¾—åˆ°çš„æ–‡ä»¶å¤¹å
+    create_folder(time_path);//ä¸€æ¬¡packingï¼Œä¸€ä¸ªæ–‡ä»¶å¤¹
     this->image_path = "./" + time_path;
-    get_points_to_polygon();//µ¼ÈëÎÄ¼ş¼ĞÄÚµÄÔª¼şÎÄ¼ş
-    //PolygonModification();//½«Ôª¼ş½øĞĞ´ÖÁÏ»¯
-    Vector2d1 boundingRect;//Ô²Öù²ÄÁÏ2Î¬½ØÃæµÄ¾ØĞÎ
-    int beamWidth = 10;//Õâ¸ö¼´beamsearchËã·¨µÄÊø¿í
+    get_points_to_polygon();//å¯¼å…¥æ–‡ä»¶å¤¹å†…çš„å…ƒä»¶æ–‡ä»¶
+    //PolygonModification();//å°†å…ƒä»¶è¿›è¡Œç²—æ–™åŒ–
+    Vector2d1 boundingRect;//åœ†æŸ±ææ–™2ç»´æˆªé¢çš„çŸ©å½¢
+    int beamWidth = 10;//è¿™ä¸ªå³beamsearchç®—æ³•çš„æŸå®½
     boundingRect.push_back(Vector2d(0, 0));
     boundingRect.push_back(Vector2d(boxx, 0));
     boundingRect.push_back(Vector2d(boxx, boxy));
     boundingRect.push_back(Vector2d(0, boxy));
-    std::vector<Vector2d1> wtf = perior_geometry_put();//ÎÒÃÇµÄtest.txtÖĞµÄÔª¼ş¸÷²»ÏàÍ¬£¬ÊÇ¸ö¼¯ºÏ£¬Èç¹ûÒª¼ÓÈëÏàÍ¬µÄÔª¼ş£¬¾ÍÊ¹ÓÃ¸Ãº¯ÊıÖØ¸´¼ÓÈë¶ÔÓ¦Ôª¼ş
-    std::vector<Vector2d1> bestSolution = beamSearch(wtf, beamWidth, boundingRect);//ºËĞÄËã·¨£¬beamsearchËã·¨
+    std::vector<Vector2d1> wtf = perior_geometry_put();//æˆ‘ä»¬çš„test.txtä¸­çš„å…ƒä»¶å„ä¸ç›¸åŒï¼Œæ˜¯ä¸ªé›†åˆï¼Œå¦‚æœè¦åŠ å…¥ç›¸åŒçš„å…ƒä»¶ï¼Œå°±ä½¿ç”¨è¯¥å‡½æ•°é‡å¤åŠ å…¥å¯¹åº”å…ƒä»¶
+    std::vector<Vector2d1> bestSolution = beamSearch(wtf, beamWidth, boundingRect);//æ ¸å¿ƒç®—æ³•ï¼Œbeamsearchç®—æ³•
 
-    // Êä³ö×î¼Ñ½â¾ö·½°¸
-    std::cout << "×î¼Ñ½â¾ö·½°¸£º" << std::endl;
+    // è¾“å‡ºæœ€ä½³è§£å†³æ–¹æ¡ˆ
+    std::cout << "æœ€ä½³è§£å†³æ–¹æ¡ˆï¼š" << std::endl;
     for (const Vector2d1& polygon : bestSolution) {
-        // Êä³ö¶à±ßĞÎµÄ×ø±ê
+        // è¾“å‡ºå¤šè¾¹å½¢çš„åæ ‡
         for (const Vector2d& point : polygon) {
             std::cout << "(" << point.x << ", " << point.y << ") ";
         }
         std::cout << std::endl;
     }
-    if (bestSolution.empty())cout << "ÎŞ·¨Éú³É½â¾ö·½°¸£¡" << endl;//Èç¹û·µ»ØÎª¿Õ£¬Ôò´ú±íÎŞ³É¹¦·½°¸£¬ÕâËµÃ÷Õâ¼¸¸öÔ­¼şÔÙÔõÃ´·ÅÖÃ¶¼»á·¢ÉúÅö×²³åÍ»
-    else geometry_layer_output(bestSolution);//»æÖÆÊä³öº¯Êı
+    if (bestSolution.empty())cout << "æ— æ³•ç”Ÿæˆè§£å†³æ–¹æ¡ˆï¼" << endl;//å¦‚æœè¿”å›ä¸ºç©ºï¼Œåˆ™ä»£è¡¨æ— æˆåŠŸæ–¹æ¡ˆï¼Œè¿™è¯´æ˜è¿™å‡ ä¸ªåŸä»¶å†æ€ä¹ˆæ”¾ç½®éƒ½ä¼šå‘ç”Ÿç¢°æ’å†²çª
+    else geometry_layer_output(bestSolution);//ç»˜åˆ¶è¾“å‡ºå‡½æ•°
 }
 
-void Beamsearch::test() {//²âÊÔº¯Êı£¬ÏÖÔÚ²âÊÔµÄ¾ÍÊÇPolygonModification2()£¬Õâ¸öº¯ÊıÓĞºÜ´óµÄÎÊÌâ£¬ÎÒÃÇÏîÄ¿¾Í½øÕ¹µ½ÕâÁË
+void Beamsearch::test() {//æµ‹è¯•å‡½æ•°ï¼Œç°åœ¨æµ‹è¯•çš„å°±æ˜¯PolygonModification2()ï¼Œè¿™ä¸ªå‡½æ•°æœ‰å¾ˆå¤§çš„é—®é¢˜ï¼Œæˆ‘ä»¬é¡¹ç›®å°±è¿›å±•åˆ°è¿™äº†
     get_points_to_polygon();
     vector<Vector2d1> a = polygons;
     PolygonModification2();
@@ -532,11 +566,11 @@ void Beamsearch::get_points_to_polygon() {
     ifstream infile;
     infile.open(address);
     if (!infile.is_open()) {
-        std::cout << "ÎÄ¼ş´ò¿ªÊ§°Ü" << endl;
+        std::cout << "æ–‡ä»¶æ‰“å¼€å¤±è´¥" << endl;
         return;
     }
     string line;
-    while (getline(infile, line)) {//Ã¿´Î´ÓÎÄ¼ş¶ÁÈ¡Ò»ĞĞ
+    while (getline(infile, line)) {//æ¯æ¬¡ä»æ–‡ä»¶è¯»å–ä¸€è¡Œ
         istringstream iss(line);
         Vector2d1 points;
         int n;
@@ -547,29 +581,29 @@ void Beamsearch::get_points_to_polygon() {
             iss >> x >> y;
             points.push_back(Vector2d(x, y));
         }
-        if (PL().HGP_2D_Polygon_Is_Clockwise_Oriented_C(points))//·ÀÖ¹µãµÄË³Ğòµßµ¹¶øµ¼ÖÂÉú³ÉµÄ¶à±ßĞÎÊÇ¸ºµÄ£¨¶à±ßĞÎ±ßÄã¿ÉÒÔÀí½âÎªÊÇÓĞÏòµÄ£¬ËùÒÔÎÒÃÇµÃ¿¼ÂÇË³ÄæÊ±ÕëÎÊÌâ£©
+        if (PL().HGP_2D_Polygon_Is_Clockwise_Oriented_C(points))//é˜²æ­¢ç‚¹çš„é¡ºåºé¢ å€’è€Œå¯¼è‡´ç”Ÿæˆçš„å¤šè¾¹å½¢æ˜¯è´Ÿçš„ï¼ˆå¤šè¾¹å½¢è¾¹ä½ å¯ä»¥ç†è§£ä¸ºæ˜¯æœ‰å‘çš„ï¼Œæ‰€ä»¥æˆ‘ä»¬å¾—è€ƒè™‘é¡ºé€†æ—¶é’ˆé—®é¢˜ï¼‰
         {
             std::reverse(points.begin(), points.end());
         }
         polygons.push_back(points);
     }
-    origin_polygons = polygons;//»ñµÃÏÖÔÚ´ıÅÅÁĞµÄ×î¿ªÊ¼µÄ¶à±ßĞÎÃÇ
+    origin_polygons = polygons;//è·å¾—ç°åœ¨å¾…æ’åˆ—çš„æœ€å¼€å§‹çš„å¤šè¾¹å½¢ä»¬
 }
 
-std::vector<Vector2d1> Beamsearch::perior_geometry_put()//´¦Àí³öÏÖÖØ¸´µÄÔª¼ş
+std::vector<Vector2d1> Beamsearch::perior_geometry_put()//å¤„ç†å‡ºç°é‡å¤çš„å…ƒä»¶
 {
     std::vector<Vector2d1> ans = polygons;
-    std::cout << "Í¼ĞÎÖÖÀà¼ÓÈëÊÇ·ñÖØ¸´" << endl;
+    std::cout << "å›¾å½¢ç§ç±»åŠ å…¥æ˜¯å¦é‡å¤" << endl;
     bool ques;
     cin >> ques;
     if (ques) {
-        std::cout << "ÖØ¸´µÄÓĞ¼¸¸ö" << endl;
+        std::cout << "é‡å¤çš„æœ‰å‡ ä¸ª" << endl;
         int n; cin >> n;
         while (n--) {
             int type;
             cin >> type;
             if (type > polygons.size()) {
-                std::cout << "Ã»ÓĞ¸ÃÀàĞÍµÄ¼¸ºÎ½á¹¹Å¶£¬ÇëÖØĞÂÊäÈë" << endl;
+                std::cout << "æ²¡æœ‰è¯¥ç±»å‹çš„å‡ ä½•ç»“æ„å“¦ï¼Œè¯·é‡æ–°è¾“å…¥" << endl;
                 n++;
                 continue;
             }
@@ -581,48 +615,48 @@ std::vector<Vector2d1> Beamsearch::perior_geometry_put()//´¦Àí³öÏÖÖØ¸´µÄÔª¼ş
 }
 
 void Beamsearch::geometry_layer_output(vector<Vector2d1> a) {
-    // ¼ÆËãÍ¼ÏñµÄ³ß´ç
+    // è®¡ç®—å›¾åƒçš„å°ºå¯¸
 
-    // ´´½¨Ò»¸öºÚÉ«µÄÍ¼Ïñ£¬³ß´çÎª(boxy, boxx / 2)£¬Êı¾İÀàĞÍÎªCV_64FC3£¬³õÊ¼ÖµÎªºÚÉ«
+    // åˆ›å»ºä¸€ä¸ªé»‘è‰²çš„å›¾åƒï¼Œå°ºå¯¸ä¸º(boxy, boxx / 2)ï¼Œæ•°æ®ç±»å‹ä¸ºCV_64FC3ï¼Œåˆå§‹å€¼ä¸ºé»‘è‰²
     cv::Mat rightimage(boxy, boxx / 2, CV_64FC3, cv::Scalar(0, 0, 0));
 
-    // »æÖÆ¶à±ßĞÎ
+    // ç»˜åˆ¶å¤šè¾¹å½¢
     for (const auto& polygon : a) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         const cv::Point* pts = points.data();
         int num_points = points.size();
-        // »æÖÆ¶à±ßĞÎÏßÌõ
+        // ç»˜åˆ¶å¤šè¾¹å½¢çº¿æ¡
         cv::polylines(rightimage, &pts, &num_points, 1, true, cv::Scalar(255, 255, 255), 2);
     }
 
-    // ×óÓÒ·­×ªÍ¼Ïñ
+    // å·¦å³ç¿»è½¬å›¾åƒ
     cv::Mat leftimage;
     cv::flip(rightimage, leftimage, 1);
 
-    // Æ´½Ó×óÓÒÍ¼Ïñ£¬µÃµ½¶Ô³ÆÍ¼Ïñ
+    // æ‹¼æ¥å·¦å³å›¾åƒï¼Œå¾—åˆ°å¯¹ç§°å›¾åƒ
     cv::Mat symmetric_image;
     cv::hconcat(leftimage, rightimage, symmetric_image);
 
-    // »æÖÆÒ»Ìõ´¹Ö±Ïß
+    // ç»˜åˆ¶ä¸€æ¡å‚ç›´çº¿
     cv::Point point1(boxx / 2, boxy);
     cv::Point point2(boxx / 2, 0);
     cv::line(symmetric_image, point1, point2, cv::Scalar(0, 0, 255), 1);
 
-    // ÏÔÊ¾Í¼Ïñ
+    // æ˜¾ç¤ºå›¾åƒ
     cv::imshow("Polygons", symmetric_image);
     cv::waitKey(0);
     return;
 }
 
 void Beamsearch::geometry_layer_output2(vector<Vector2d1> a, vector<Vector2d1> b) {
-    // ¼ÆËãÍ¼ÏñµÄ³ß´ç
+    // è®¡ç®—å›¾åƒçš„å°ºå¯¸
     static int count = 0;
 
     string path = this->image_path;
@@ -630,55 +664,55 @@ void Beamsearch::geometry_layer_output2(vector<Vector2d1> a, vector<Vector2d1> b
     cout << path << endl;
     ++count;
 
-    // ´´½¨Ò»¸öºÚÉ«µÄÍ¼Ïñ£¬³ß´çÎª(boxy, boxx / 2)£¬Êı¾İÀàĞÍÎªCV_64FC3£¬³õÊ¼ÖµÎªºÚÉ«
+    // åˆ›å»ºä¸€ä¸ªé»‘è‰²çš„å›¾åƒï¼Œå°ºå¯¸ä¸º(boxy, boxx / 2)ï¼Œæ•°æ®ç±»å‹ä¸ºCV_64FC3ï¼Œåˆå§‹å€¼ä¸ºé»‘è‰²
     cv::Mat rightimage(boxy, boxx / 2, CV_64FC3, cv::Scalar(0, 0, 0));
 
-    // »æÖÆ¶à±ßĞÎ
+    // ç»˜åˆ¶å¤šè¾¹å½¢
     for (const auto& polygon : a) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         const cv::Point* pts = points.data();
         int num_points = points.size();
-        // »æÖÆ¶à±ßĞÎÏßÌõ
+        // ç»˜åˆ¶å¤šè¾¹å½¢çº¿æ¡
         cv::polylines(rightimage, &pts, &num_points, 1, true, cv::Scalar(255, 255, 255), 2);
     }
 
-    // »æÖÆ¶à±ßĞÎ
+    // ç»˜åˆ¶å¤šè¾¹å½¢
     for (const auto& polygon : b) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         const cv::Point* pts = points.data();
         int num_points = points.size();
-        // »æÖÆ¶à±ßĞÎÏßÌõ
+        // ç»˜åˆ¶å¤šè¾¹å½¢çº¿æ¡
         cv::polylines(rightimage, &pts, &num_points, 1, true, cv::Scalar(255, 0, 0), 2);
     }
 
-    // ×óÓÒ·­×ªÍ¼Ïñ
+    // å·¦å³ç¿»è½¬å›¾åƒ
     cv::Mat leftimage;
     cv::flip(rightimage, leftimage, 1);
 
-    // Æ´½Ó×óÓÒÍ¼Ïñ£¬µÃµ½¶Ô³ÆÍ¼Ïñ
+    // æ‹¼æ¥å·¦å³å›¾åƒï¼Œå¾—åˆ°å¯¹ç§°å›¾åƒ
     cv::Mat symmetric_image;
     cv::hconcat(leftimage, rightimage, symmetric_image);
 
-    // »æÖÆÒ»Ìõ´¹Ö±Ïß
+    // ç»˜åˆ¶ä¸€æ¡å‚ç›´çº¿
     cv::Point point1(boxx / 2, boxy);
     cv::Point point2(boxx / 2, 0);
     cv::line(symmetric_image, point1, point2, cv::Scalar(0, 0, 255), 1);
 
-    // ÏÔÊ¾Í¼Ïñ
+    // æ˜¾ç¤ºå›¾åƒ
     //cv::imshow("Polygons", symmetric_image);
     cv::imwrite(path, symmetric_image);
     //cv::waitKey(0);
@@ -686,177 +720,177 @@ void Beamsearch::geometry_layer_output2(vector<Vector2d1> a, vector<Vector2d1> b
 }
 
 void Beamsearch::geometry_layer_save(vector<Vector2d1> a, int num, double score) {
-    // ¼ÆËãÍ¼ÏñµÄ³ß´ç
+    // è®¡ç®—å›¾åƒçš„å°ºå¯¸
     string path = this->image_path;
-    path = path + "/½Úµã" + to_string(num) + "ÆÀ·Ö£º" + to_string(score) + ".jpg";
+    path = path + "/èŠ‚ç‚¹" + to_string(num) + "è¯„åˆ†ï¼š" + to_string(score) + ".jpg";
     cout << path << endl;
 
-    // ´´½¨Ò»¸öºÚÉ«µÄÍ¼Ïñ£¬³ß´çÎª(boxy, boxx / 2)£¬Êı¾İÀàĞÍÎªCV_64FC3£¬³õÊ¼ÖµÎªºÚÉ«
+    // åˆ›å»ºä¸€ä¸ªé»‘è‰²çš„å›¾åƒï¼Œå°ºå¯¸ä¸º(boxy, boxx / 2)ï¼Œæ•°æ®ç±»å‹ä¸ºCV_64FC3ï¼Œåˆå§‹å€¼ä¸ºé»‘è‰²
     cv::Mat rightimage(boxy, boxx / 2, CV_64FC3, cv::Scalar(0, 0, 0));
 
-    // »æÖÆ¶à±ßĞÎ
+    // ç»˜åˆ¶å¤šè¾¹å½¢
     for (const auto& polygon : a) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         const cv::Point* pts = points.data();
         int num_points = points.size();
-        // »æÖÆ¶à±ßĞÎÏßÌõ
+        // ç»˜åˆ¶å¤šè¾¹å½¢çº¿æ¡
         cv::polylines(rightimage, &pts, &num_points, 1, true, cv::Scalar(255, 255, 255), 2);
     }
 
-    // ×óÓÒ·­×ªÍ¼Ïñ
+    // å·¦å³ç¿»è½¬å›¾åƒ
     cv::Mat leftimage;
     cv::flip(rightimage, leftimage, 1);
 
-    // Æ´½Ó×óÓÒÍ¼Ïñ£¬µÃµ½¶Ô³ÆÍ¼Ïñ
+    // æ‹¼æ¥å·¦å³å›¾åƒï¼Œå¾—åˆ°å¯¹ç§°å›¾åƒ
     cv::Mat symmetric_image;
     cv::hconcat(leftimage, rightimage, symmetric_image);
 
-    // »æÖÆÒ»Ìõ´¹Ö±Ïß
+    // ç»˜åˆ¶ä¸€æ¡å‚ç›´çº¿
     cv::Point point1(boxx / 2, boxy);
     cv::Point point2(boxx / 2, 0);
     cv::line(symmetric_image, point1, point2, cv::Scalar(0, 0, 255), 1);
 
-    // ±£´æÍ¼Ïñ
+    // ä¿å­˜å›¾åƒ
     cv::imwrite(path, symmetric_image);
     cv::waitKey(0);
     return;
 }
 
 void Beamsearch::geometry_layer_save1(vector<Vector2d1> a, vector<Vector2d1> b) {
-    // ¼ÆËãÍ¼ÏñµÄ³ß´ç
+    // è®¡ç®—å›¾åƒçš„å°ºå¯¸
     string path = this->image_path;
     string path1 = path + "/Roughing.jpg";
     string path2 = path + "/Finishing.jpg";
     string path3 = path + "/BothOfThem.jpg";
 
-    // ´´½¨Ò»¸ö°×É«µÄÍ¼Ïñ£¬³ß´çÎª(boxy, boxx / 2)£¬Êı¾İÀàĞÍÎªCV_8UC3£¬³õÊ¼ÖµÎª°×É«
+    // åˆ›å»ºä¸€ä¸ªç™½è‰²çš„å›¾åƒï¼Œå°ºå¯¸ä¸º(boxy, boxx / 2)ï¼Œæ•°æ®ç±»å‹ä¸ºCV_8UC3ï¼Œåˆå§‹å€¼ä¸ºç™½è‰²
     cv::Mat rightimage1(boxy, boxx / 2, CV_8UC3, cv::Scalar(255, 255, 255));
     std::vector<std::vector<cv::Point>> pts;
 
-    // »æÖÆ¶à±ßĞÎ£¬Ê¹ÓÃºÚÉ«Ìî³ä
+    // ç»˜åˆ¶å¤šè¾¹å½¢ï¼Œä½¿ç”¨é»‘è‰²å¡«å……
     for (const auto& polygon : a) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         pts.push_back(points);
     }
-    // Ìî³ä¶à±ßĞÎ
+    // å¡«å……å¤šè¾¹å½¢
     cv::fillPoly(rightimage1, pts, cv::Scalar(0, 0, 0));
 
-    // ×óÓÒ·­×ªÍ¼Ïñ
+    // å·¦å³ç¿»è½¬å›¾åƒ
     cv::Mat leftimage1;
     cv::flip(rightimage1, leftimage1, 1);
 
-    // Æ´½Ó×óÓÒÍ¼Ïñ£¬µÃµ½¶Ô³ÆÍ¼Ïñ
+    // æ‹¼æ¥å·¦å³å›¾åƒï¼Œå¾—åˆ°å¯¹ç§°å›¾åƒ
     cv::Mat symmetric_image1;
     cv::hconcat(leftimage1, rightimage1, symmetric_image1);
 
-    // »æÖÆÒ»Ìõ´¹Ö±Ïß
+    // ç»˜åˆ¶ä¸€æ¡å‚ç›´çº¿
     cv::Point point1(boxx / 2, boxy);
     cv::Point point2(boxx / 2, 0);
     cv::line(symmetric_image1, point1, point2, cv::Scalar(0, 0, 255), 1);
 
-    // ±£´æÍ¼Ïñ
+    // ä¿å­˜å›¾åƒ
     cv::imwrite(path1, symmetric_image1);
 
-    // ´´½¨Ò»¸ö°×É«µÄÍ¼Ïñ£¬³ß´çÎª(boxy, boxx / 2)£¬Êı¾İÀàĞÍÎªCV_8UC3£¬³õÊ¼ÖµÎª°×É«
+    // åˆ›å»ºä¸€ä¸ªç™½è‰²çš„å›¾åƒï¼Œå°ºå¯¸ä¸º(boxy, boxx / 2)ï¼Œæ•°æ®ç±»å‹ä¸ºCV_8UC3ï¼Œåˆå§‹å€¼ä¸ºç™½è‰²
     cv::Mat rightimage2(boxy, boxx / 2, CV_8UC3, cv::Scalar(255, 255, 255));
     std::vector<std::vector<cv::Point>> pts1;
 
-    // »æÖÆ¶à±ßĞÎ£¬Ê¹ÓÃÀ¶É«Ìî³ä
+    // ç»˜åˆ¶å¤šè¾¹å½¢ï¼Œä½¿ç”¨è“è‰²å¡«å……
     for (const auto& polygon : b) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         pts1.push_back(points);
     }
-    // Ìî³ä¶à±ßĞÎ
+    // å¡«å……å¤šè¾¹å½¢
     cv::fillPoly(rightimage2, pts1, cv::Scalar(255, 0, 0));
 
-    // ×óÓÒ·­×ªÍ¼Ïñ
+    // å·¦å³ç¿»è½¬å›¾åƒ
     cv::Mat leftimage2;
     cv::flip(rightimage2, leftimage2, 1);
 
-    // Æ´½Ó×óÓÒÍ¼Ïñ£¬µÃµ½¶Ô³ÆÍ¼Ïñ
+    // æ‹¼æ¥å·¦å³å›¾åƒï¼Œå¾—åˆ°å¯¹ç§°å›¾åƒ
     cv::Mat symmetric_image2;
     cv::hconcat(leftimage2, rightimage2, symmetric_image2);
 
-    // »æÖÆÒ»Ìõ´¹Ö±Ïß
+    // ç»˜åˆ¶ä¸€æ¡å‚ç›´çº¿
     cv::Point point3(boxx / 2, boxy);
     cv::Point point4(boxx / 2, 0);
     cv::line(symmetric_image2, point3, point4, cv::Scalar(0, 0, 255), 1);
 
-    // ±£´æÍ¼Ïñ
+    // ä¿å­˜å›¾åƒ
     cv::imwrite(path2, symmetric_image2);
 
-    // ´´½¨Ò»¸ö°×É«µÄÍ¼Ïñ£¬³ß´çÎª(boxy, boxx / 2)£¬Êı¾İÀàĞÍÎªCV_8UC3£¬³õÊ¼ÖµÎª°×É«
+    // åˆ›å»ºä¸€ä¸ªç™½è‰²çš„å›¾åƒï¼Œå°ºå¯¸ä¸º(boxy, boxx / 2)ï¼Œæ•°æ®ç±»å‹ä¸ºCV_8UC3ï¼Œåˆå§‹å€¼ä¸ºç™½è‰²
     cv::Mat rightimage3(boxy, boxx / 2, CV_8UC3, cv::Scalar(255, 255, 255));
 
     std::vector<std::vector<cv::Point>> pts2;
 
-    // »æÖÆ¶à±ßĞÎ£¬Ê¹ÓÃºÚÉ«Ìî³ä
+    // ç»˜åˆ¶å¤šè¾¹å½¢ï¼Œä½¿ç”¨é»‘è‰²å¡«å……
     for (const auto& polygon : a) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         pts2.push_back(points);
     }
-    // Ìî³ä¶à±ßĞÎ£¬Ê¹ÓÃºÚÉ«Ìî³ä
+    // å¡«å……å¤šè¾¹å½¢ï¼Œä½¿ç”¨é»‘è‰²å¡«å……
     cv::fillPoly(rightimage3, pts2, cv::Scalar(0, 0, 0));
 
     std::vector<std::vector<cv::Point>> pts3;
 
-    // »æÖÆ¶à±ßĞÎ£¬Ê¹ÓÃÀ¶É«Ìî³ä
+    // ç»˜åˆ¶å¤šè¾¹å½¢ï¼Œä½¿ç”¨è“è‰²å¡«å……
     for (const auto& polygon : b) {
         std::vector<cv::Point> points;
         for (const auto& vertex : polygon) {
-            // ½«¶¥µã×ø±ê×ª»»ÎªOpenCVÍ¼Ïñ×ø±êÏµÖĞµÄ×ø±ê
+            // å°†é¡¶ç‚¹åæ ‡è½¬æ¢ä¸ºOpenCVå›¾åƒåæ ‡ç³»ä¸­çš„åæ ‡
             int x = vertex.x;
-            int y = boxy - vertex.y; // ÔÚOpenCVÖĞ£¬Í¼ÏñµÄÔ­µãÎ»ÓÚ×óÉÏ½Ç£¬ËùÒÔĞèÒª·­×ªyÖá
+            int y = boxy - vertex.y; // åœ¨OpenCVä¸­ï¼Œå›¾åƒçš„åŸç‚¹ä½äºå·¦ä¸Šè§’ï¼Œæ‰€ä»¥éœ€è¦ç¿»è½¬yè½´
             cv::Point point(x, y);
             points.push_back(point);
         }
         pts3.push_back(points);
     }
-    // Ìî³ä¶à±ßĞÎ£¬Ê¹ÓÃÀ¶É«Ìî³ä
+    // å¡«å……å¤šè¾¹å½¢ï¼Œä½¿ç”¨è“è‰²å¡«å……
     cv::fillPoly(rightimage3, pts3, cv::Scalar(0, 0, 255));
 
-    // ×óÓÒ·­×ªÍ¼Ïñ
+    // å·¦å³ç¿»è½¬å›¾åƒ
     cv::Mat leftimage3;
     cv::flip(rightimage3, leftimage3, 1);
 
-    // Æ´½Ó×óÓÒÍ¼Ïñ£¬µÃµ½¶Ô³ÆÍ¼Ïñ
+    // æ‹¼æ¥å·¦å³å›¾åƒï¼Œå¾—åˆ°å¯¹ç§°å›¾åƒ
     cv::Mat symmetric_image3;
     cv::hconcat(leftimage3, rightimage3, symmetric_image3);
 
-    // »æÖÆÒ»Ìõ´¹Ö±Ïß
+    // ç»˜åˆ¶ä¸€æ¡å‚ç›´çº¿
     cv::Point point5(boxx / 2, boxy);
     cv::Point point6(boxx / 2, 0);
     cv::line(symmetric_image3, point5, point6, cv::Scalar(0, 0, 255), 1);
 
-    // ±£´æÍ¼Ïñ
+    // ä¿å­˜å›¾åƒ
     cv::imwrite(path3, symmetric_image3);
     return;
 }
